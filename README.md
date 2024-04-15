@@ -63,17 +63,6 @@ Key Points:
 - Returns a flat tabular file, combining call center metrics with agent activity data
 
 
-Ex.
-```bash
-! cd Desktop/
-! git clone https://github.com/murdockma/agent_performance.git
-! cd agent_performance/
-
-# Ensure data files are in the /data dir
-! sh run.sh
-```
-
-
 ### Output
 
 The shell command will generate `agent_call_center_metrics_{startdate}_{enddate}.xlsx` in your working directory
@@ -83,6 +72,19 @@ Which we can open, resize, save, and distribute.
 <div style="text-align: center;">
   <img width="971" alt="Screenshot 2022-06-26 at 12 58 47 PM" src="https://user-images.githubusercontent.com/47290536/175829815-8943e422-e346-4926-a722-1000e4a777e3.png">
 </div>
+
+<br>
+
+
+Ex.
+```bash
+! cd Desktop/
+! git clone https://github.com/murdockma/agent_performance.git
+! cd agent_performance/
+
+# Ensure data files are in the /data dir
+! sh run.sh
+```
 
 <br>
 
