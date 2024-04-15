@@ -46,7 +46,11 @@ This section outlines the data requirements for running the script:
 - Maintain consistent file names as above across script executions to avoid errors
 - The script relies on these specific names to locate and process the data
 
-**4. Run the .sh file**
+**4. Run the shell (.sh) file**
+
+```bash
+sh run.sh
+```
 
 This script prompts the user for the `start_date` and `end_date`, builds a Docker image, and runs the Python script (report_script.py) within the container, passing the validated dates as arguments.
 
