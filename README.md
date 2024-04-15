@@ -2,7 +2,7 @@
 
 This guide provides step-by-step instructions on how to run your Python script using Docker. It assumes you have a Dockerfile and a `run.sh` file in your GitHub repository.
 
-**Prerequisites:**
+### **Prerequisites:**
 
 * **Git**: Download and install Git from [https://git-scm.com/](https://git-scm.com/) if you don't have it already.
 * **Docker Desktop**: Download and install Docker Desktop from [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/).
@@ -95,7 +95,7 @@ Docker provides a way to package your Python script and its dependencies into a 
 
 The provided shell commands used in the project demonstrate how to build and run the Docker image:
 
-**Building the Image:**
+### **Building the Image:**
 
 ```bash
 docker build -t call_metrics_image .
