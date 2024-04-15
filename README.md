@@ -107,11 +107,17 @@ docker build -t call_metrics_image .
 docker run -it --rm --name my-container -v $(pwd):/app call_metrics_image python /app/report_script.py "$start_date" "$end_date"
 ```
 - This command runs the built image and executes the specified command:
+  
   `-it`: Runs the container in interactive mode and allocates a pseudo-TTY
+  
   `--rm`: Removes the container automatically after it exits
+  
   `--name my-container`: Assigns a name (my-container) to the container for easier identification.
+  
   `-v $(pwd):/app`: Mounts the current directory ($(pwd)) of your local machine onto the /app directory within the container. This allows you to easily update your script and data files without rebuilding the image.
+  
   `call_metrics_image`: Specifies the name of the Docker image to run.
+  
   `python /app/report_script.py "$start_date" "$end_date"`: Executes the Python script (report_script.py) within the container, passing the start_date and end_date arguments as specified.
 
 ### Script Methods</b>
