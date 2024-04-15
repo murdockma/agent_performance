@@ -58,6 +58,18 @@ Key Points:
 - Executes report_script.py with validated dates
 - Returns a flat tabular file, combining call center metrics with agent activity data
 
+
+Ex.
+```bash
+! cd Desktop/
+! git clone https://github.com/murdockma/agent_performance.git
+! cd agent_performance/
+
+# Ensure data files are in the /data dir
+! sh run.sh
+```
+
+
 ### Output
 
 The shell command will generate `agent_call_center_metrics_{startdate}_{enddate}.xlsx` in your working directory
