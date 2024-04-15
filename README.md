@@ -1,53 +1,66 @@
-# Breakdown
-This Python script - `agent_call_center_metrics.py`, generates a flat tabular file, combining call center metrics with agent activity data. It requires seven mandatory parameters:
+# Breakdown: Running the Script with Docker
 
-- <b>CSV Files</b>:
+This guide provides step-by-step instructions on how to run your Python script using Docker. It assumes you have a Dockerfile and a `run.sh` file in your GitHub repository.
+
+**Prerequisites:**
+
+* **Git**: Download and install Git from [https://git-scm.com/](https://git-scm.com/) if you don't have it already.
+* **Docker Desktop**: Download and install Docker Desktop from [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/).
+
+**Steps:**
+
+**1. Clone the Repository:**
+
+Open a terminal window and use the `git clone` command to clone the GitHub repository to your local machine. Replace `<username>` and `<repository_name>` with your actual details. 
+
+More details here [https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
+
+```bash
+git clone https://github.com/<username>/<repository_name>.git
+```
+
+**2. Navigate to the Cloned Repository:**
+
+```bash
+cd agent_performance
+```
+
+**3. Prepare the data:**
+
+This section outlines the data requirements for running the script:
+
+<b>CSV Files</b>:
+- Location: The script expects five CSV files to be present in the `data/` directory within your project directory.
+  
+- File Names:
+  
   - `call_center_csv`: The call center master leads list downloaded from Google Spreadsheets
   - `dials_csv`: Total dials CSV downloaded from Five9
   - `contacts_csv`: Total contacts CSV downloaded from Five9
   - `five9_csv`: Agent daily state summary CSV downloaded from Five9
   - `paylocity_csv`: Master time card summary CSV automatically sent weekly by Paylocity
 
-- <b>Date Range</b>:
-  - `start_date`: Enter the start date in YYYY-MM-DD format
-  - `end_date`: Enter the end date in YYYY-MM-DD format
-  
+<b>Date Range</b>:
+- The script will prompt you to enter the start_date and end_date in YYYY-MM-DD format for the report generation.
+- Ensure the data within the CSV files covers the specified date range
+- Maintain consistent file names as above across script executions to avoid errors.
+- The script relies on these specific names to locate and process the data.
 
-<br>
+**4. Run the .sh file**
 
-## Running the Script (MacOS) 𐭁
+This script prompts the user for the `start_date` and `end_date`, builds a Docker image, and runs the Python script (report_script.py) within the container, passing the validated dates as arguments.
 
-1. Prerequisites:
-   - <b>Developer Tools</b>: Open your terminal and run `xcode-select --install` to install developer tools if needed
-   - <b>Git</b>: If you don't have Git, install it following instructions you can find online (on Mac, Git is included with developer tools).
+Key Points:
 
-2. Clone the Repository:
-   - If the script isn't in your current directory, clone the repository containing the script using the following command `git clone https://github.com/murdockma/agent_performance.git`
-
-4. Navigate to the Script Directory:
-
-   Use `cd agent_peformance` to enter the cloned directory
-
-6. Install Dependencies:
-   - Run `sh conf/config.sh` to install required Python libraries the script depends on. You might be prompted for your password during installation
-  
-7. Verify Installation:
-   - Run `pip show pandas` or `pip3 show pandas` to verify pandas is installed and shows a version number
-     
-6. Prepare Data Files:
-   - Ensure the five required CSV files are named exactly as mentioned earlier and placed in the `data/` directory
-   - These file names should be consistent each time you run the script
-
-     ![Screenshot 2022-06-26 at 12 40 57 PM](https://user-images.githubusercontent.com/47290536/175829250-06beeaa3-f698-44c8-be32-48d4d50e3734.png)
-     
-
-7. Run the Script:
-   - In your terminal, type python `agent_call_center_metrics.py` to execute the script
-   - The script will prompt you to enter the start and end dates for the desired week in YYYY-MM-DD format
+- Validates dates in YYYY-MM-DD format
+- Builds call_metrics_image from Dockerfile
+- Runs a container with volume mounting for script access
+- Executes report_script.py with validated dates
+- Returns a flat tabular file, combining call center metrics with agent activity data
 
 ### Output
 
-If successful, the script generates a weekly metrics report as an Excel file named `agent_call_center_metrics_{startdate}_{enddate}.xlsx` in your working directory
+The shell command will generate `agent_call_center_metrics_{startdate}_{enddate}.xlsx` in your working directory
 
 Which we can open, resize, save, and distribute.
 
@@ -59,67 +72,97 @@ Which we can open, resize, save, and distribute.
 
 ## Technical Details
 
+### Docker Implementation
+Docker provides a way to package your Python script and its dependencies into a self-contained unit. This allows you to run your script in a consistent environment regardless of the host machine's configuration.
+
+The provided shell commands demonstrate how to build and run the Docker image:
+
+**Building the Image:**
+
+```bash
+docker build -t call_metrics_image .
+```
+- This command builds a Docker image based on the instructions in your Dockerfile. The -t option tags the image with a name call_metrics_image for easy reference. The . at the end specifies the context (current directory) where the Dockerfile resides.
+  
+***Running the Container:***
+```bash
+docker run -it --rm --name my-container -v $(pwd):/app call_metrics_image python /app/report_script.py "$start_date" "$end_date"
+```
+- This command runs the built image and executes the specified command:
+  - `-it`: Runs the container in interactive mode and allocates a pseudo-TTY
+  - `--rm`: Removes the container automatically after it exits
+  - `--name my-container`: Assigns a name (my-container) to the container for easier identification.
+  - `-v $(pwd):/app`: Mounts the current directory ($(pwd)) of your local machine onto the /app directory within the container. This allows you to easily update your script and data files without rebuilding the image.
+  - `call_metrics_image`: Specifies the name of the Docker image to run.
+  - `python /app/report_script.py "$start_date" "$end_date"`: Executes the Python script (report_script.py) within the container, passing the start_date and end_date arguments as specified.
+
 ### Script Methods</b>
 
-The script utilizes seven internal methods to process and transform data:
- 
- - `sets_manip` 
-     - Calculates the number of sets per agent. The method preserves the agents username and # of sets (a set is calculated as a row that does not have a 'WT/SA Bonus' of $0). Within this method, we are also manually changing certain agents usernames, given that some agents have different usernames across datasets (this is more of a data integrity issue, that would need to be fixed on the source end). <b>Final output is a dataframe consisting of agents and their # of sets </b>.
- - `contacts_manip`
-     - Sums the columns across each row (i.e, agent) to calculate dials. This method also merges its output with the previous method, sets_df. <b>Final output is a dataframe consisting of agent usernames, and there respective number of sets and contacts</b>.
- - `dials_manip` 
-     - Almost identical to contacts_manip, except it calculates total agent dials, and also does some feature engineering on columns to produce new columns like sets/dial, and sets/contact. <b>Final output is a dataframe consisting of agents (including their first/last name) and their # of dials, sets, contacts, sets/dials, and sets/contacts</b>.
- - `five9_manip` 
-     - Splits datetime object into hours. <b>Final output is a dataframe consisting of agents and their total five9 working hours (i.e, whole number+fractional amount of hours [<i>e.g, 40.267</i>] )</b>.
- - `hours_merge_and_round` 
-     - Brings together previous datasets with the five9 hours, returning each agent and their total five9 working hours. This method also rounds the agents fractional hours into either .00, .25, .50, .75, or 1.0. <b>Final output is a dataframe consisting of agents and all previous data + each agents total five9 hours</b>
- - `payloc_manip`
-     - Cumulates multiple columns on hours into a summed row per agent. Within this method we are also manually changing agents usernames to match across datasets. <b>Final output of this method is each agent and their total paylocity working hours</b>
- - `clean_and_export` 
-     - Method that merges all previous data with paylocity hours, brings it all into one dataframe, does some simple clean up, and exports it to an .xlsx file. This can be changed to .csv or whatever output in desired. This method is also calculating aggregates across columns as rows, and producing new columns. <b>Final output is the weekly metrics spreadsheet</b>.
+This class handles data processing and analysis for call center metrics. Here's a detailed explanation of each method:
+
+**1. init(self, data_paths, start_date, end_date):**
+
+Initializes the class with file paths for various CSV data sources and the date range for the report.
+Validates if all required keys (call_center_data, etc.) are present in the data_paths dictionary.
+Stores dataframes loaded from CSV files (dataframes dictionary) with the exception of the Paylocity data (payloc_df), which is read without headers.
+Stores the provided start and end dates (start_date, end_date).
+
+**2. calculate_sets(self):**
+
+Calculates the number of completed sets (identified by non-zero "WT/SA Bonus") within the date range for each agent in the call_center_data DataFrame.
+Filters data based on the date range.
+Groups data by agent (BCI Caller) and counts occurrences of completed sets (case-insensitively).
+Applies name mapping for consistency (name_mapping).
+Renames columns for future joins (AGENT).
+Returns a DataFrame containing agent names and corresponding set counts.
 
 
-<br>
-### Class Instantiation:
+**3. calculate_contacts(self):**
 
-The script utilizes a class-based approach. To run the script, you'll need to instantiate the class named `weekly_metrics` and pass the required parameters to its constructor:
+Calculates the total number of contacts attempted by each agent in the contacts_data DataFrame.
+Extracts agent usernames by splitting the AGENT column on "@".
+Calculates the sum of values in all numeric columns (assumed to represent contact attempts).
+Merges the resulting DataFrame (contact_summary) with the output from calculate_sets based on the matching AGENT column.
+Returns the merged DataFrame containing agent names, total contacts, and set counts.
 
-```python
-inst = weekly_metrics(call_center_csv="call_center_master_list.csv",
-                      dials_csv="total_warm_dials.csv",
-                      contacts_csv="total_warm_contacts.csv",
-                      five9_csv="agent_daily_summary.csv",
-                      paylocity_csv="master_timecard_summary.csv",
-                      start_date = "2022-03-01",
-                      end_date="2022-03-05")
-```
-                  
-This assigns the instantiated object to a variable (`inst`). You can then call the `final_merge` method of the object to generate the final .xlsx file
+**4. calculate_dials(self):**
 
-```python
-inst.final_merge()
-```
+Calculates the number of dials made by each agent in the dials_data DataFrame and merges it with previous results.
+Removes unnecessary columns (AGENT GROUP).
+Extracts agent usernames from the AGENT column.
+Calculates the sum across all numeric columns (assumed to represent dials).
+Merges the resulting DataFrame (dials_summary) with the merged output from previous functions based on AGENT.
+Calculates ratios like Sets/Dial and Sets/Contact using vectorized operations.
+Returns a DataFrame containing agent information, dials, contacts, sets, and calculated ratios.
 
-<br>
 
-## Enhancements: The Road Ahead
+**5. calculate_five9_calling_hours(self):**
 
-This script holds promise for significant improvement in three key areas: logic, data access, and user experience. Here's a breakdown of potential advancements:
+Calculates the total calling hours spent by each agent based on "On Call" and "Ready" states in the five9_data DataFrame.
+Splits time strings in relevant columns ("On Call / AGENT STATE TIME", etc.) into separate hour, minute, and second columns.
+Converts minutes and seconds to fractional hours and sums them for each state.
+Calculates total calling hours by summing state durations.
+Extracts agent usernames.
+Returns a DataFrame containing agent names and total calling hours.
 
-  - <b>Logic Enhancements</b>: The script's logic can be refined to handle more complex scenarios and generate even more insightful reports. This might involve incorporating additional data points or implementing advanced data analysis techniques
+**6. calculate_set_ratio(self):**
 
-  - <b>Data Accessibility</b>: Currently, the script relies on manually placing CSV files in a specific location. A significant improvement would be to have it retrieve data directly from APIs (Application Programming Interfaces) provided by the data sources (Five9, Paylocity, etc.). This would eliminate manual file handling and streamline the process
-    
-    - <b>Improved Usability</b> - Here's how API integration can improve the script's usability:
-     
-      - <b>Separate Data Fetching Scripts</b>: Create individual Python scripts dedicated to fetching data from each API endpoint. This modular approach promotes code organization and reusability.
-        
-      - <b>Autonomous Script</b>: By incorporating the separate data fetching scripts and calling them within the main script, you can achieve a fully autonomous script. This eliminates manual file management and simplifies the execution process.
-        
-      - <b>Effortless Usage</b>: As long as the API endpoints remain functional and data structures consistent, the script becomes incredibly user-friendly. Users can simply run the script without needing to worry about manual file handling.
+Merges outputs from calculate_dials and calculate_five9_calling_hours based on AGENT.
+Selects relevant columns and rounds specific metrics (Sets/Dial, Sets/Contact).
+Creates separate columns for integer and fractional parts of Five9 Calling Hours.
+Implements custom rounding logic for minutes based on predefined tiers in a dictionary.
+Combines hours and rounded minutes for a new "Five9 Calling Hours (Rounded)" column.
+Calculates the ratio Sets/Five9 Calling Hours (Rounded).
+Returns the final DataFrame with various call activity metrics and rounded values.
 
-  - <b>User Experience</b> - Here are a couple of options for improving the digestion and distribution of this report:
-    
-    - <b>Dashboard Integration</b>: Consider integrating the report generated by the script into a dashboarding tool. This would allow for real-time data visualization and facilitate data exploration
-      
-    - <b>Automated Scheduling</b>: Schedule the script to run automatically at regular intervals (daily, weekly, etc.) using cron jobs (on Linux/macOS) or Task Scheduler (on Windows)
+**7. find_paylocity_working_hours(self):**
+
+Processes the Paylocity data (payloc_df) to extract agent names and working hours.
+Identifies rows with NaN values in a specific column (index 4).
+Attempts to extract hours from those rows, handling potential conversion errors.
+Filters valid hours (excluding NaNs).
+Finds agents based on patterns ("ID:") in the first column.
+Creates a DataFrame with identified agents and working hours.
+Cleans and formats first names and last initials (consider using regular expressions for better name parsing).
+Combines first name and last initial into a new column AGENT FIRST NAME.
+Returns a DataFrame containing agent names and their working hours.
