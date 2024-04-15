@@ -93,7 +93,7 @@ Ex.
 ### Docker Implementation
 Docker provides a way to package your Python script and its dependencies into a self-contained unit. This allows you to run your script in a consistent environment regardless of the host machine's configuration.
 
-The provided shell commands demonstrate how to build and run the Docker image:
+The provided shell commands used in the project demonstrate how to build and run the Docker image:
 
 **Building the Image:**
 
@@ -118,14 +118,14 @@ docker run -it --rm --name my-container -v $(pwd):/app call_metrics_image python
 
 This class handles data processing and analysis for call center metrics. Here's a detailed explanation of each method:
 
-**1. init(self, data_paths, start_date, end_date):**
+**1. `init(self, data_paths, start_date, end_date)`:**
 
 Initializes the class with file paths for various CSV data sources and the date range for the report.
 Validates if all required keys (call_center_data, etc.) are present in the data_paths dictionary.
 Stores dataframes loaded from CSV files (dataframes dictionary) with the exception of the Paylocity data (payloc_df), which is read without headers.
 Stores the provided start and end dates (start_date, end_date).
 
-**2. calculate_sets(self):**
+**2. `calculate_sets(self)`:**
 
 Calculates the number of completed sets (identified by non-zero "WT/SA Bonus") within the date range for each agent in the call_center_data DataFrame.
 Filters data based on the date range.
@@ -135,7 +135,7 @@ Renames columns for future joins (AGENT).
 Returns a DataFrame containing agent names and corresponding set counts.
 
 
-**3. calculate_contacts(self):**
+**3. `calculate_contacts(self)`:**
 
 Calculates the total number of contacts attempted by each agent in the contacts_data DataFrame.
 Extracts agent usernames by splitting the AGENT column on "@".
@@ -143,7 +143,7 @@ Calculates the sum of values in all numeric columns (assumed to represent contac
 Merges the resulting DataFrame (contact_summary) with the output from calculate_sets based on the matching AGENT column.
 Returns the merged DataFrame containing agent names, total contacts, and set counts.
 
-**4. calculate_dials(self):**
+**4. `calculate_dials(self)`:**
 
 Calculates the number of dials made by each agent in the dials_data DataFrame and merges it with previous results.
 Removes unnecessary columns (AGENT GROUP).
@@ -154,7 +154,7 @@ Calculates ratios like Sets/Dial and Sets/Contact using vectorized operations.
 Returns a DataFrame containing agent information, dials, contacts, sets, and calculated ratios.
 
 
-**5. calculate_five9_calling_hours(self):**
+**5. `calculate_five9_calling_hours(self)`:**
 
 Calculates the total calling hours spent by each agent based on "On Call" and "Ready" states in the five9_data DataFrame.
 Splits time strings in relevant columns ("On Call / AGENT STATE TIME", etc.) into separate hour, minute, and second columns.
@@ -163,7 +163,7 @@ Calculates total calling hours by summing state durations.
 Extracts agent usernames.
 Returns a DataFrame containing agent names and total calling hours.
 
-**6. calculate_set_ratio(self):**
+**6. `calculate_set_ratio(self)`:**
 
 Merges outputs from calculate_dials and calculate_five9_calling_hours based on AGENT.
 Selects relevant columns and rounds specific metrics (Sets/Dial, Sets/Contact).
@@ -173,7 +173,7 @@ Combines hours and rounded minutes for a new "Five9 Calling Hours (Rounded)" col
 Calculates the ratio Sets/Five9 Calling Hours (Rounded).
 Returns the final DataFrame with various call activity metrics and rounded values.
 
-**7. find_paylocity_working_hours(self):**
+**7. `find_paylocity_working_hours(self)`:**
 
 Processes the Paylocity data (payloc_df) to extract agent names and working hours.
 Identifies rows with NaN values in a specific column (index 4).
