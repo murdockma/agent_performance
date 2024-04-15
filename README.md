@@ -13,7 +13,7 @@ This guide provides step-by-step instructions on how to run your Python script u
 
 Open a terminal window and use the `git clone` command to clone the GitHub repository to your local machine. Replace `<username>` and `<repository_name>` with your actual details. 
 
-More details here [https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
+More info here [https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
 
 ```bash
 git clone https://github.com/<username>/<repository_name>.git
