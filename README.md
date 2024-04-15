@@ -41,10 +41,10 @@ This section outlines the data requirements for running the script:
   - `paylocity_csv`: Master time card summary CSV automatically sent weekly by Paylocity
 
 <b>Date Range</b>:
-- The script will prompt you to enter the start_date and end_date in YYYY-MM-DD format for the report generation.
+- The script will prompt you to enter the `start_date` and `end_date` in YYYY-MM-DD format for the report generation
 - Ensure the data within the CSV files covers the specified date range
-- Maintain consistent file names as above across script executions to avoid errors.
-- The script relies on these specific names to locate and process the data.
+- Maintain consistent file names as above across script executions to avoid errors
+- The script relies on these specific names to locate and process the data
 
 **4. Run the .sh file**
 
