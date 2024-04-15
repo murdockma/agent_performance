@@ -100,7 +100,7 @@ The provided shell commands used in the project demonstrate how to build and run
 ```bash
 docker build -t call_metrics_image .
 ```
-- This command builds a Docker image based on the instructions in your Dockerfile. The -t option tags the image with a name call_metrics_image for easy reference. The . at the end specifies the context (current directory) where the Dockerfile resides.
+This command builds a Docker image based on the instructions in your Dockerfile. The -t option tags the image with a name call_metrics_image for easy reference. The . at the end specifies the context (current directory) where the Dockerfile resides.
   
 ***Running the Container:***
 ```bash
