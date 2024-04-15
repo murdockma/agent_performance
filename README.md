@@ -10,7 +10,7 @@ This guide provides step-by-step instructions on how to run the Python script us
 
 ## **Prerequisites:**
 
-* **Git**: Download and install Git from [https://git-scm.com/](https://git-scm.com/) if you don't have it already.
+* **Git**: Download and install Git from [[https://git-scm.com/](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)]([https://git-scm.com/](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)) if you don't have it already.
 * **Docker Desktop**: Download and install Docker Desktop from [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/).
 
 ## **Steps:**
