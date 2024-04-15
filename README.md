@@ -102,11 +102,11 @@ docker build -t call_metrics_image .
 ```
 This command builds a Docker image based on the instructions in your Dockerfile. The -t option tags the image with a name call_metrics_image for easy reference. The . at the end specifies the context (current directory) where the Dockerfile resides.
   
-***Running the Container:***
+### ***Running the Container:***
 ```bash
 docker run -it --rm --name my-container -v $(pwd):/app call_metrics_image python /app/report_script.py "$start_date" "$end_date"
 ```
-- This command runs the built image and executes the specified command:
+This command runs the built image and executes the specified command:
   
   `-it`: Runs the container in interactive mode and allocates a pseudo-TTY
   
