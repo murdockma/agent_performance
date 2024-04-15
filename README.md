@@ -2,14 +2,14 @@
 
 This guide provides step-by-step instructions on how to run your Python script using Docker. It assumes you have a Dockerfile and a `run.sh` file in your GitHub repository.
 
-### **Prerequisites:**
+## **Prerequisites:**
 
 * **Git**: Download and install Git from [https://git-scm.com/](https://git-scm.com/) if you don't have it already.
 * **Docker Desktop**: Download and install Docker Desktop from [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/).
 
-**Steps:**
+### **Steps:**
 
-**1. Clone the Repository:**
+#### **1. Clone the Repository:**
 
 Open a terminal window and use the `git clone` command to clone the GitHub repository to your local machine. Replace `<username>` and `<repository_name>` with your actual details. 
 
@@ -19,13 +19,13 @@ More info here [https://docs.github.com/en/repositories/creating-and-managing-re
 git clone https://github.com/<username>/<repository_name>.git
 ```
 
-**2. Navigate to the Cloned Repository:**
+#### **2. Navigate to the Cloned Repository:**
 
 ```bash
 cd agent_performance
 ```
 
-**3. Prepare the data:**
+#### **3. Prepare the data:**
 
 This section outlines the data requirements for running the script:
 
@@ -46,7 +46,7 @@ This section outlines the data requirements for running the script:
 - Maintain consistent file names as above across script executions to avoid errors
 - The script relies on these specific names to locate and process the data
 
-**4. Run the shell (.sh) file**
+#### **4. Run the shell (.sh) file**
 
 ```bash
 sh run.sh
@@ -63,7 +63,7 @@ Key Points:
 - Returns a flat tabular file, combining call center metrics with agent activity data
 
 
-### Output
+#### Output
 
 The shell command will generate `agent_call_center_metrics_{startdate}_{enddate}.xlsx` in your working directory
 
