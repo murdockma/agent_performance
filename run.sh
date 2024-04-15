@@ -1,8 +1,7 @@
 validate_date() {
   local input_date="$1"
   if [ -n "$input_date" ] && date -d "$input_date" >/dev/null 2>&1; then
-  # if [ -n "$2" ] && [ "$(date -d "$2" +%Y-%m-%d 2> /dev/null)" = "$2" ]; then
-    return 0  # Success
+    return 0 
   else
     echo "Invalid date format (YYYY-MM-DD required)."
     exit 1
