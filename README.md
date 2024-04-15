@@ -1,6 +1,6 @@
 # Breakdown: Running the Script with Docker
 
-This guide provides step-by-step instructions on how to run your Python script using Docker. It assumes you have a Dockerfile and a `run.sh` file in your GitHub repository.
+This guide provides step-by-step instructions on how to run the Python script using Docker. It assumes you have a Dockerfile and a `run.sh` file in your GitHub repository.
 
 ## **Prerequisites:**
 
