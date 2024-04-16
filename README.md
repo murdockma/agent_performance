@@ -35,7 +35,7 @@ cd agent_performance
 ### **3. Prepare the data:**
 
 <b>CSV Files</b>:
-- Location: The script expects five CSV files to be present in the `data/` directory within your project directory. Example files are included in the `data/` dir
+- Location: The script expects five CSV files to be present in the `data/` directory within your project directory. Example files are included in `data/`
   
 - File Names:
   
