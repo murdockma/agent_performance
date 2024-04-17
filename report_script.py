@@ -4,7 +4,7 @@ import numpy as np
 import sys
 import openpyxl
 
-class CallCenterMetrics():
+class CallCenterMetrics:
     
     def __init__(self, data_paths, start_date, end_date):
         """
