@@ -8,7 +8,7 @@ class CallCenterMetrics:
     
     def __init__(self, data_paths, start_date, end_date):
         """
-        Initializes the WeeklyMetrics class with file paths and date information.
+        Initializes the CallCenterMetrics class with file paths and date information.
 
         Args:
             self (CallCenterMetrics): An instance of the CallCenterMetrics class.
