@@ -127,7 +127,7 @@ This command runs the built image and executes the specified command:
 
 ### Script Methods</b>
 
-This class handles data processing and analysis for call center metrics. Here's a detailed explanation of each method:
+The script utilizes a class-based approach. Here's a detailed explanation of each method:
 
 **1. `init(self, data_paths, start_date, end_date)`:**
 
