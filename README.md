@@ -81,8 +81,8 @@ Which we can open, resize, save, and distribute.
 <br>
 
 
-Ex.
-```bash
+List of commands (after Docker and Git installation):
+```shell
 ! cd Desktop/
 ! git clone https://github.com/murdockma/agent_performance.git
 ! cd agent_performance/
