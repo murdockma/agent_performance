@@ -213,14 +213,14 @@ class CallCenterMetrics:
         
         # Merge DataFrames and select relevant columns
         merged_df = self.calculate_dials().merge(self.calculate_five9_calling_hours(), on='AGENT', how='inner')
-        export_df = merged_df[['AGENT FIRST NAME', 'Dials', 'Contacts', 'Sets', 'Sets/Dial', 'Sets/Contact', 'Five9 Calling Hours']]
+        metrics_df = merged_df[['AGENT FIRST NAME', 'Dials', 'Contacts', 'Sets', 'Sets/Dial', 'Sets/Contact', 'Five9 Calling Hours']]
         
         # Round specific metrics
-        export_df = export_df.round({'Sets/Dial': 2, 'Sets/Contact': 2, 'Five9 Calling Hours': 2})
+        metrics_df = metrics_df.round({'Sets/Dial': 2, 'Sets/Contact': 2, 'Five9 Calling Hours': 2})
 
         # Extract integer part and fractional part of time
-        export_df['Hours'] = export_df['Five9 Calling Hours'].astype(int)
-        export_df['Minutes'] = (export_df['Five9 Calling Hours'] % 1 * 100).round(0).astype(int)
+        metrics_df['Hours'] = metrics_df['Five9 Calling Hours'].astype(int)
+        metrics_df['Minutes'] = (metrics_df['Five9 Calling Hours'] % 1 * 100).round(0).astype(int)
 
         # Round minutes
         rounding_tiers = {
@@ -231,19 +231,19 @@ class CallCenterMetrics:
             (90, float('inf')): 1.0
         }
         rounding_tiers_list = [(low, high, rounding_tiers[(low, high)]) for low, high in rounding_tiers.keys()]
-        export_df['Rounded Minutes'] = export_df['Minutes'].apply(
+        metrics_df['Rounded Minutes'] = metrics_df['Minutes'].apply(
             lambda x: 
                 next((round_, None) for low, high, round_ in rounding_tiers_list if low <= x < high)[0]
         )
 
         # Combine hours and rounded minutes for Five9 Calling Hours
-        export_df['Five9 Calling Hours (Rounded)'] = export_df['Hours'] + export_df['Rounded Minutes']
+        metrics_df['Five9 Calling Hours (Rounded)'] = metrics_df['Hours'] + metrics_df['Rounded Minutes']
 
         # Calculate Sets/Five9 Calling Hours
-        export_df['Sets/Five9 Calling Hours'] = export_df['Sets'] / export_df['Five9 Calling Hours (Rounded)']
-        export_df.drop(columns={'Minutes', 'Rounded Minutes'}, inplace=True)
+        metrics_df['Sets/Five9 Calling Hours'] = metrics_df['Sets'] / metrics_df['Five9 Calling Hours (Rounded)']
+        metrics_df.drop(columns={'Minutes', 'Rounded Minutes'}, inplace=True)
 
-        return export_df
+        return metrics_df
     
     def find_paylocity_working_hours(self):
         """
@@ -283,20 +283,20 @@ class CallCenterMetrics:
         agents = self.payloc_df[self.payloc_df.iloc[:, 0].str.contains("ID:")][1].to_list()
 
         # Create DataFrame with identified agents and hours
-        total_df = pd.DataFrame({'Agents': agents, 'Paylocity Working Hours': valid_hours})
+        agent_hours = pd.DataFrame({'Agents': agents, 'Paylocity Working Hours': valid_hours})
 
         # Clean and format names (consider using regular expressions or parsing libraries)
-        total_df['first_name'] = total_df['Agents'].str.split(',').str[1].str.lower().str.slice(1).str.capitalize()
-        total_df['last_initial'] = total_df['Agents'].str[0]
+        agent_hours['first_name'] = agent_hours['Agents'].str.split(',').str[1].str.lower().str.slice(1).str.capitalize()
+        agent_hours['last_initial'] = agent_hours['Agents'].str[0]
         name_map = {'Ally': 'Allison', 'Mike': 'Michael', 'Matt': 'Matthew'}
-        total_df['first_name'] = total_df['first_name'].apply(lambda x: name_map.get(x, x)) 
+        agent_hours['first_name'] = agent_hours['first_name'].apply(lambda x: name_map.get(x, x)) 
 
         # Combine first name last initial 
-        total_df['AGENT FIRST NAME'] = total_df['first_name'] + ' ' + total_df['last_initial']
-        total_df[['AGENT FIRST NAME', 'Paylocity Working Hours']] = total_df[['AGENT FIRST NAME', 'Paylocity Working Hours']].astype(str)
-        payloc_df_merge = total_df[['AGENT FIRST NAME', 'Paylocity Working Hours']]
-
-        return payloc_df_merge
+        agent_hours['AGENT FIRST NAME'] = agent_hours['first_name'] + ' ' + agent_hours['last_initial']
+        agent_hours[['AGENT FIRST NAME', 'Paylocity Working Hours']] = agent_hours[['AGENT FIRST NAME', 'Paylocity Working Hours']].astype(str)
+        agent_summary = agent_hours[['AGENT FIRST NAME', 'Paylocity Working Hours']]
+        
+        return agent_summary
         
     def consolidate_and_export_data(self):
         """
